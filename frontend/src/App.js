@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import Vehicles from './pages/Vehicles';
 import Drivers from './pages/Drivers';
 import Alerts from './pages/Alerts';
+import Trips from './pages/Trips';
 import './App.css';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
             <Route path="/vehicles" element={<Vehicles />} />
             <Route path="/drivers" element={<Drivers />} />
             <Route path="/alerts" element={<Alerts />} />
+            <Route path="/trips" element={<Trips />} />
           </Routes>
         </div>
       </div>

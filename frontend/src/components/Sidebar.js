@@ -6,6 +6,7 @@ const navItems = [
   { path: "/vehicles", label: "Vehicles", icon: "V" },
   { path: "/drivers", label: "Drivers", icon: "Dr" },
   { path: "/alerts", label: "Alerts", icon: "A" },
+  { path: '/trips', label: 'Trips', icon: '🗺️' },
 ];
 
 function Sidebar() {

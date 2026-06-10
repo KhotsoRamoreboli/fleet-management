@@ -1,5 +1,4 @@
-const fs = require('fs');
-fs.writeFileSync('src/pages/Trips.js', `
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -106,6 +105,3 @@ function Trips() {
 }
 
 export default Trips;
-`);
-
-console.log('Trips.js written successfully!');
