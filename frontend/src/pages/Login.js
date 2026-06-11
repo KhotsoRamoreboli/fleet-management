@@ -1,6 +1,4 @@
-const fs = require('fs');
 
-fs.writeFileSync('src/pages/Login.js', `
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -75,6 +73,3 @@ function Login({ onLogin }) {
 }
 
 export default Login;
-`);
-
-console.log('Login.js written successfully!');
