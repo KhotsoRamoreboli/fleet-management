@@ -1,3 +1,20 @@
 const pg = require('pg');
-const pool = new pg.Pool({host:'localhost',port:5432,database:'fleet_db',user:'postgres',password:'#4Docntate'});
+
+const pool = new pg.Pool({
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  database: process.env.DB_NAME,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+});
+
+pool.connect((err, client, release) => {
+  if (err) {
+    console.error('Connection error:', err.message);
+  } else {
+    console.log('Connected to PostgreSQL!');
+    release();
+  }
+});
+
 module.exports = pool;
