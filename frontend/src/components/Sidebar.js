@@ -9,6 +9,7 @@ const navItems = [
   { path: '/trips', label: 'Trips', icon: '🗺️' },
   { path: '/maintenance', label: 'Maintenance', icon: '🔧' }, 
   { path: '/fuel', label: 'Fuel Analytics', icon: '⛽' },
+  { path: '/reports', label: 'Reports', icon: '📄' },
 ];
 
 function Sidebar({ user, onLogout }) {

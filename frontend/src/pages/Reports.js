@@ -1,6 +1,4 @@
-const fs = require('fs');
 
-fs.writeFileSync('src/pages/Reports.js', `
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import jsPDF from 'jspdf';
@@ -117,6 +115,3 @@ function Reports() {
 }
 
 export default Reports;
-`);
-
-console.log('Reports.js written successfully!');
