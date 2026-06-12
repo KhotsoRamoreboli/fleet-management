@@ -1,6 +1,4 @@
-const fs = require('fs');
 
-fs.writeFileSync('src/pages/Fuel.js', `
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -91,6 +89,3 @@ function Fuel() {
 }
 
 export default Fuel;
-`);
-
-console.log('Fuel.js written successfully!');

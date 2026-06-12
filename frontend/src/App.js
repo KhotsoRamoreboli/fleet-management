@@ -7,6 +7,7 @@ import Drivers from './pages/Drivers';
 import Alerts from './pages/Alerts';
 import Trips from './pages/Trips';
 import Maintenance from './pages/Maintenance';
+import Fuel from './pages/Fuel';
 import Login from './pages/Login';
 import './App.css';
 
@@ -42,6 +43,7 @@ function App() {
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/trips" element={<Trips />} />
             <Route path="/maintenance" element={<Maintenance />} />
+            <Route path="/fuel" element={<Fuel />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>
