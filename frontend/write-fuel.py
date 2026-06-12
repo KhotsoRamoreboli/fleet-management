@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+code = '''import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
@@ -124,4 +124,9 @@ function Fuel() {
   );
 }
 
-export default Fuel;
+export default Fuel;'''
+
+with open('src/pages/Fuel.js', 'w') as f:
+    f.write(code)
+
+print('Fuel.js written successfully!')
