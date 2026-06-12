@@ -7,6 +7,7 @@ const navItems = [
   { path: '/drivers', label: 'Drivers', icon: '👤' },
   { path: '/alerts', label: 'Alerts', icon: '🔔' },
   { path: '/trips', label: 'Trips', icon: '🗺️' },
+  { path: '/maintenance', label: 'Maintenance', icon: '🔧' },
 ];
 
 function Sidebar({ user, onLogout }) {

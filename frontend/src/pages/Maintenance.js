@@ -1,6 +1,4 @@
-const fs = require('fs');
 
-fs.writeFileSync('src/pages/Maintenance.js', `
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -109,6 +107,3 @@ function Maintenance() {
 }
 
 export default Maintenance;
-`);
-
-console.log('Maintenance.js written successfully!');

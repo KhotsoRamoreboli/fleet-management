@@ -6,6 +6,7 @@ import Vehicles from './pages/Vehicles';
 import Drivers from './pages/Drivers';
 import Alerts from './pages/Alerts';
 import Trips from './pages/Trips';
+import Maintenance from './pages/Maintenance';
 import Login from './pages/Login';
 import './App.css';
 
@@ -40,6 +41,7 @@ function App() {
             <Route path="/drivers" element={<Drivers />} />
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/trips" element={<Trips />} />
+            <Route path="/maintenance" element={<Maintenance />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>
