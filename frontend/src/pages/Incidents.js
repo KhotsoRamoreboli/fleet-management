@@ -1,4 +1,4 @@
-code = '''import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
@@ -250,9 +250,4 @@ function Incidents() {
   );
 }
 
-export default Incidents;'''
-
-with open('src/pages/Incidents.js', 'w', encoding='utf-8') as f:
-    f.write(code)
-
-print('Incidents.js written successfully!')
+export default Incidents;
