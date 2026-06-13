@@ -15,6 +15,7 @@ const navItems = [
   { path: '/inspections', label: 'Inspections', icon: '✅' },
   { path: '/poolbookings', label: 'Pool Booking', icon: '🚗' },
   { path: '/vendors', label: 'Vendors', icon: '🏪' },
+  { path: '/documents', label: 'Documents', icon: '📁' },
 ];
 
 function Sidebar({ user, onLogout }) {

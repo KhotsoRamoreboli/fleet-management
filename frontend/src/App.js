@@ -14,6 +14,7 @@ import JobCards from './pages/JobCards';
 import Inspections from './pages/Inspections';
 import PoolBookings from './pages/PoolBookings';
 import Vendors from './pages/Vendors';
+import Documents from './pages/Documents';
 import Login from './pages/Login';
 import './App.css';
 
@@ -56,6 +57,7 @@ function App() {
             <Route path="/inspections" element={<Inspections />} />
             <Route path="/poolbookings" element={<PoolBookings />} />
             <Route path="/vendors" element={<Vendors />} />
+            <Route path="/documents" element={<Documents />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>

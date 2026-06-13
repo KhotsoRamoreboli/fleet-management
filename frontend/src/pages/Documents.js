@@ -1,4 +1,4 @@
-content = '''import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const DOC_TYPES = ["licence_disc", "cof", "insurance", "permit", "service_book", "other"];
@@ -173,9 +173,4 @@ function Documents() {
   );
 }
 
-export default Documents;'''
-
-with open('src/pages/Documents.js', 'w', encoding='utf-8') as f:
-    f.write(content)
-
-print('Documents.js written successfully!')
+export default Documents;
