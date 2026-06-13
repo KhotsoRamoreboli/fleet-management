@@ -17,6 +17,7 @@ const navItems = [
   { path: '/vendors', label: 'Vendors', icon: '🏪' },
   { path: '/documents', label: 'Documents', icon: '📁' },
   { path: '/scheduledreports', label: 'Scheduled Reports', icon: '📅' },
+  { path: '/gps', label: 'GPS Tracking', icon: '📍' },
 ];
 
 function Sidebar({ user, onLogout }) {

@@ -1,4 +1,4 @@
-content = '''import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
 import L from "leaflet";
@@ -199,9 +199,4 @@ function GPSTracking() {
   );
 }
 
-export default GPSTracking;'''
-
-with open('src/pages/GPSTracking.js', 'w', encoding='utf-8') as f:
-    f.write(content)
-
-print('GPSTracking.js written successfully!')
+export default GPSTracking;
