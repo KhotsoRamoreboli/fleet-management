@@ -12,6 +12,7 @@ const navItems = [
   { path: '/reports', label: 'Reports', icon: '📄' },
   { path: '/incidents', label: 'Incidents', icon: '🚨' },
   { path: '/jobcards', label: 'Job Cards', icon: '🛠️' },
+  { path: '/inspections', label: 'Inspections', icon: '✅' },
 ];
 
 function Sidebar({ user, onLogout }) {

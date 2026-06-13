@@ -1,4 +1,4 @@
-content = '''import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const INSPECTION_TYPES = ["pre-trip", "periodic", "cof_readiness", "roadworthy", "annual"];
@@ -211,9 +211,4 @@ function Inspections() {
   );
 }
 
-export default Inspections;'''
-
-with open('src/pages/Inspections.js', 'w', encoding='utf-8') as f:
-    f.write(content)
-
-print('Inspections.js written successfully!')
+export default Inspections;
