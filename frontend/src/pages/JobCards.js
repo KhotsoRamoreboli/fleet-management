@@ -1,6 +1,4 @@
-code = open('src/pages/Incidents.js', 'r', encoding='utf-8').read()
-
-content = '''import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const STATUS_FLOW = ["logged", "approved", "booked", "in_progress", "quality_check", "closed"];
@@ -159,9 +157,4 @@ function JobCards() {
   );
 }
 
-export default JobCards;'''
-
-with open('src/pages/JobCards.js', 'w', encoding='utf-8') as f:
-    f.write(content)
-
-print('JobCards.js written successfully!')
+export default JobCards;

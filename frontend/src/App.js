@@ -10,6 +10,7 @@ import Maintenance from './pages/Maintenance';
 import Fuel from './pages/Fuel';
 import Reports from './pages/Reports';
 import Incidents from './pages/Incidents';
+import JobCards from './pages/JobCards';
 import Login from './pages/Login';
 import './App.css';
 
@@ -48,6 +49,7 @@ function App() {
             <Route path="/fuel" element={<Fuel />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/incidents" element={<Incidents />} />
+            <Route path="/jobcards" element={<JobCards />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>

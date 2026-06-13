@@ -9,6 +9,7 @@ const authRouter = require('./routes/auth');
 const maintenanceRouter = require('./routes/maintenance');
 const fuelRouter = require('./routes/fuel');
 const incidentsRouter = require('./routes/incidents');
+const jobcardsRouter = require('./routes/jobcards');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -24,6 +25,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/maintenance', maintenanceRouter);
 app.use('/api/fuel', fuelRouter);
 app.use('/api/incidents', incidentsRouter);
+app.use('/api/jobcards', jobcardsRouter);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Fleet Management API is running' });
