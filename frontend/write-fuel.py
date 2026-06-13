@@ -1,72 +1,95 @@
 content = '''import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const VENDOR_TYPES = ["workshop", "panel_beater", "tyre_supplier", "towing", "auto_electrician", "specialist", "other"];
-const TYPE_LABELS = { workshop: "Workshop", panel_beater: "Panel Beater", tyre_supplier: "Tyre Supplier", towing: "Towing", auto_electrician: "Auto Electrician", specialist: "Specialist", other: "Other" };
-const TYPE_COLORS = { workshop: "#4f8ef7", panel_beater: "#9b59b6", tyre_supplier: "#2ecc71", towing: "#e74c3c", auto_electrician: "#f39c12", specialist: "#1abc9c", other: "#8892b0" };
-
-function Vendors() {
-  const [vendors, setVendors] = useState([]);
-  const [showForm, setShowForm] = useState(false);
+function Drivers() {
+  const [drivers, setDrivers] = useState([]);
+  const [licenceAlerts, setLicenceAlerts] = useState([]);
   const [search, setSearch] = useState("");
-  const [filterType, setFilterType] = useState("all");
-  const [form, setForm] = useState({ name: "", vendor_type: "workshop", contact_person: "", phone: "", email: "", address: "", district: "", hourly_rate: "", sla_response_hours: "24", sla_completion_days: "7" });
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [showForm, setShowForm] = useState(false);
+  const [activeTab, setActiveTab] = useState("drivers");
+  const [form, setForm] = useState({ name: "", licence_number: "", phone: "", email: "", licence_type: "", licence_expiry: "", department: "" });
 
-  useEffect(() => { fetchVendors(); }, []);
+  useEffect(() => { fetchAll(); }, []);
 
-  const fetchVendors = () => {
-    axios.get("http://localhost:5000/api/vendors").then(res => setVendors(res.data));
+  const fetchAll = () => {
+    axios.get("http://localhost:5000/api/drivers").then(res => setDrivers(res.data));
+    axios.get("http://localhost:5000/api/drivers/licence-alerts").then(res => setLicenceAlerts(res.data));
   };
 
   const handleSubmit = () => {
-    axios.post("http://localhost:5000/api/vendors", form).then(() => {
-      fetchVendors();
+    axios.post("http://localhost:5000/api/drivers", form).then(() => {
+      fetchAll();
       setShowForm(false);
-      setForm({ name: "", vendor_type: "workshop", contact_person: "", phone: "", email: "", address: "", district: "", hourly_rate: "", sla_response_hours: "24", sla_completion_days: "7" });
+      setForm({ name: "", licence_number: "", phone: "", email: "", licence_type: "", licence_expiry: "", department: "" });
     });
   };
 
-  const handleStatus = (id, approval_status) => {
-    axios.put("http://localhost:5000/api/vendors/" + id + "/status", { approval_status }).then(fetchVendors);
-  };
-
   const handleDelete = (id) => {
-    if (window.confirm("Delete this vendor?")) {
-      axios.delete("http://localhost:5000/api/vendors/" + id).then(fetchVendors);
+    if (window.confirm("Delete this driver?")) {
+      axios.delete("http://localhost:5000/api/drivers/" + id).then(fetchAll);
     }
   };
 
-  const filtered = vendors.filter(v => {
-    const matchSearch = v.name.toLowerCase().includes(search.toLowerCase()) || v.district?.toLowerCase().includes(search.toLowerCase());
-    const matchType = filterType === "all" || v.vendor_type === filterType;
-    return matchSearch && matchType;
+  const filtered = drivers.filter(d => {
+    const matchSearch = d.name.toLowerCase().includes(search.toLowerCase()) ||
+      d.licence_number.toLowerCase().includes(search.toLowerCase());
+    const matchStatus = filterStatus === "all" || d.status === filterStatus;
+    return matchSearch && matchStatus;
   });
 
-  const approved = vendors.filter(v => v.approval_status === "approved").length;
-  const pending = vendors.filter(v => v.approval_status === "pending").length;
-  const avgRating = vendors.filter(v => v.rating > 0).reduce((s, v) => s + parseFloat(v.rating), 0) / (vendors.filter(v => v.rating > 0).length || 1);
-
-  const stars = (rating) => {
-    const full = Math.floor(rating);
-    return "★".repeat(full) + "☆".repeat(5 - full);
+  const statusStyle = (status) => {
+    if (status === "available") return { bg: "#e8f8f0", text: "#2ecc71" };
+    if (status === "on_trip") return { bg: "#e8f0fd", text: "#4f8ef7" };
+    return { bg: "#fef3cd", text: "#f39c12" };
   };
+
+  const alertStyle = (days) => {
+    if (days < 0) return { bg: "#fde8e8", text: "#e74c3c", label: "EXPIRED " + Math.abs(days) + " days ago" };
+    if (days <= 14) return { bg: "#fde8e8", text: "#e74c3c", label: "Expires in " + days + " days" };
+    if (days <= 30) return { bg: "#fef3cd", text: "#f39c12", label: "Expires in " + days + " days" };
+    return { bg: "#e8f8f0", text: "#2ecc71", label: "Expires in " + days + " days" };
+  };
+
+  const expired = licenceAlerts.filter(d => d.days_until_expiry < 0).length;
+  const expiringSoon = licenceAlerts.filter(d => d.days_until_expiry >= 0 && d.days_until_expiry <= 30).length;
+
+  const tabStyle = (tab) => ({
+    padding: "8px 20px", border: "none", cursor: "pointer", borderRadius: "8px 8px 0 0",
+    fontWeight: activeTab === tab ? "600" : "400",
+    background: activeTab === tab ? "#fff" : "transparent",
+    color: activeTab === tab ? "#1a1f36" : "#8892b0", fontSize: "14px"
+  });
 
   return (
     <div style={{ padding: "30px", background: "#f5f6fa", minHeight: "100vh" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
         <div>
-          <h1 style={{ color: "#1a1f36", fontSize: "26px", fontWeight: "700", marginBottom: "4px" }}>Vendor Management</h1>
-          <p style={{ color: "#8892b0", fontSize: "14px" }}>{vendors.length} vendors registered</p>
+          <h1 style={{ color: "#1a1f36", fontSize: "26px", fontWeight: "700", marginBottom: "4px" }}>Drivers</h1>
+          <p style={{ color: "#8892b0", fontSize: "14px" }}>{filtered.length} of {drivers.length} drivers</p>
         </div>
-        <button onClick={() => setShowForm(!showForm)} style={{ background: "#9b59b6", color: "#fff", border: "none", padding: "10px 20px", borderRadius: "8px", cursor: "pointer", fontWeight: "500" }}>+ Add Vendor</button>
+        <button onClick={() => setShowForm(!showForm)} style={{ background: "#4f8ef7", color: "#fff", border: "none", padding: "10px 20px", borderRadius: "8px", cursor: "pointer", fontWeight: "500" }}>+ Add Driver</button>
       </div>
+
+      {(expired > 0 || expiringSoon > 0) && (
+        <div style={{ background: "#fde8e8", border: "1px solid #f5c0c0", borderRadius: "12px", padding: "16px 20px", marginBottom: "24px", display: "flex", alignItems: "center", gap: "12px" }}>
+          <span style={{ fontSize: "24px" }}>Warning</span>
+          <div>
+            <div style={{ fontWeight: "600", color: "#a32d2d", marginBottom: "4px" }}>Licence Compliance Alert!</div>
+            <div style={{ fontSize: "13px", color: "#c0392b" }}>
+              {expired > 0 && expired + " driver(s) with EXPIRED licence. "}
+              {expiringSoon > 0 && expiringSoon + " driver(s) with licence expiring within 30 days."}
+            </div>
+          </div>
+        </div>
+      )}
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", marginBottom: "24px" }}>
         {[
-          { label: "Total Vendors", value: vendors.length, color: "#4f8ef7" },
-          { label: "Approved", value: approved, color: "#2ecc71" },
-          { label: "Pending Approval", value: pending, color: "#f39c12" },
-          { label: "Avg Rating", value: avgRating.toFixed(1) + " / 5", color: "#9b59b6" },
+          { label: "Total Drivers", value: drivers.length, color: "#4f8ef7" },
+          { label: "Available", value: drivers.filter(d => d.status === "available").length, color: "#2ecc71" },
+          { label: "Expired Licences", value: expired, color: "#e74c3c" },
+          { label: "Expiring Soon", value: expiringSoon, color: "#f39c12" },
         ].map((m, i) => (
           <div key={i} style={{ background: "#fff", borderRadius: "14px", padding: "20px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)", borderTop: "3px solid " + m.color }}>
             <div style={{ fontSize: "13px", color: "#8892b0", marginBottom: "8px" }}>{m.label}</div>
@@ -77,81 +100,114 @@ function Vendors() {
 
       {showForm && (
         <div style={{ background: "#fff", borderRadius: "14px", padding: "24px", marginBottom: "24px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
-          <h3 style={{ color: "#1a1f36", marginBottom: "20px", fontSize: "16px" }}>Register New Vendor</h3>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", marginBottom: "12px" }}>
-            <input placeholder="Vendor Name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={{ padding: "10px", borderRadius: "8px", border: "1px solid #e0e0e0" }} />
-            <select value={form.vendor_type} onChange={e => setForm({ ...form, vendor_type: e.target.value })} style={{ padding: "10px", borderRadius: "8px", border: "1px solid #e0e0e0" }}>
-              {VENDOR_TYPES.map(t => <option key={t} value={t}>{TYPE_LABELS[t]}</option>)}
-            </select>
-            <input placeholder="Contact Person" value={form.contact_person} onChange={e => setForm({ ...form, contact_person: e.target.value })} style={{ padding: "10px", borderRadius: "8px", border: "1px solid #e0e0e0" }} />
-            <input placeholder="Phone" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ padding: "10px", borderRadius: "8px", border: "1px solid #e0e0e0" }} />
-            <input placeholder="Email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} style={{ padding: "10px", borderRadius: "8px", border: "1px solid #e0e0e0" }} />
-            <input placeholder="District" value={form.district} onChange={e => setForm({ ...form, district: e.target.value })} style={{ padding: "10px", borderRadius: "8px", border: "1px solid #e0e0e0" }} />
-            <input placeholder="Hourly Rate (M)" value={form.hourly_rate} onChange={e => setForm({ ...form, hourly_rate: e.target.value })} style={{ padding: "10px", borderRadius: "8px", border: "1px solid #e0e0e0" }} />
-            <input placeholder="SLA Response (hours)" value={form.sla_response_hours} onChange={e => setForm({ ...form, sla_response_hours: e.target.value })} style={{ padding: "10px", borderRadius: "8px", border: "1px solid #e0e0e0" }} />
-            <input placeholder="SLA Completion (days)" value={form.sla_completion_days} onChange={e => setForm({ ...form, sla_completion_days: e.target.value })} style={{ padding: "10px", borderRadius: "8px", border: "1px solid #e0e0e0" }} />
+          <h3 style={{ color: "#1a1f36", marginBottom: "20px", fontSize: "16px" }}>New Driver</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px" }}>
+            {[{f:"name",l:"Full Name"},{f:"licence_number",l:"Licence Number"},{f:"phone",l:"Phone"},{f:"email",l:"Email"},{f:"licence_type",l:"Licence Type (e.g. Code 10)"},{f:"department",l:"Department"}].map(({f,l}) => (
+              <input key={f} placeholder={l} value={form[f]} onChange={e => setForm({ ...form, [f]: e.target.value })}
+                style={{ padding: "10px", borderRadius: "8px", border: "1px solid #e0e0e0" }} />
+            ))}
+            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+              <label style={{ fontSize: "12px", color: "#8892b0" }}>Licence Expiry Date</label>
+              <input type="date" value={form.licence_expiry} onChange={e => setForm({ ...form, licence_expiry: e.target.value })}
+                style={{ padding: "10px", borderRadius: "8px", border: "1px solid #e0e0e0" }} />
+            </div>
           </div>
-          <input placeholder="Address" value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #e0e0e0", marginBottom: "12px", boxSizing: "border-box" }} />
-          <div style={{ display: "flex", gap: "10px" }}>
-            <button onClick={handleSubmit} style={{ background: "#9b59b6", color: "#fff", border: "none", padding: "10px 24px", borderRadius: "8px", cursor: "pointer" }}>Save Vendor</button>
-            <button onClick={() => setShowForm(false)} style={{ background: "#e0e0e0", color: "#333", border: "none", padding: "10px 24px", borderRadius: "8px", cursor: "pointer" }}>Cancel</button>
+          <div style={{ marginTop: "12px", display: "flex", gap: "10px" }}>
+            <button onClick={handleSubmit} style={{ background: "#4f8ef7", color: "#fff", border: "none", padding: "10px 20px", borderRadius: "8px", cursor: "pointer" }}>Save</button>
+            <button onClick={() => setShowForm(false)} style={{ background: "#e0e0e0", color: "#333", border: "none", padding: "10px 20px", borderRadius: "8px", cursor: "pointer" }}>Cancel</button>
           </div>
         </div>
       )}
 
-      <div style={{ display: "flex", gap: "12px", marginBottom: "20px" }}>
-        <div style={{ flex: 1, position: "relative" }}>
-          <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "#8892b0" }}>search</span>
-          <input placeholder="Search vendors..." value={search} onChange={e => setSearch(e.target.value)}
-            style={{ width: "100%", padding: "10px 10px 10px 36px", borderRadius: "8px", border: "1px solid #e0e0e0", boxSizing: "border-box" }} />
-        </div>
-        <select value={filterType} onChange={e => setFilterType(e.target.value)} style={{ padding: "10px 16px", borderRadius: "8px", border: "1px solid #e0e0e0", background: "#fff" }}>
-          <option value="all">All Types</option>
-          {VENDOR_TYPES.map(t => <option key={t} value={t}>{TYPE_LABELS[t]}</option>)}
-        </select>
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "16px" }}>
-        {filtered.map(v => (
-          <div key={v.id} style={{ background: "#fff", borderRadius: "14px", padding: "20px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)", borderLeft: "4px solid " + (TYPE_COLORS[v.vendor_type] || "#8892b0") }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
-              <div>
-                <div style={{ fontSize: "16px", fontWeight: "700", color: "#1a1f36", marginBottom: "4px" }}>{v.name}</div>
-                <span style={{ padding: "3px 10px", borderRadius: "99px", fontSize: "12px", fontWeight: "500", background: (TYPE_COLORS[v.vendor_type] || "#8892b0") + "20", color: TYPE_COLORS[v.vendor_type] || "#8892b0" }}>
-                  {TYPE_LABELS[v.vendor_type] || v.vendor_type}
-                </span>
-              </div>
-              <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-                <span style={{ padding: "3px 10px", borderRadius: "99px", fontSize: "12px", fontWeight: "500", background: v.approval_status === "approved" ? "#e8f8f0" : "#fef3cd", color: v.approval_status === "approved" ? "#2ecc71" : "#f39c12" }}>
-                  {v.approval_status}
-                </span>
-                {v.approval_status === "pending" && (
-                  <button onClick={() => handleStatus(v.id, "approved")} style={{ background: "#e8f8f0", color: "#2ecc71", border: "none", padding: "4px 8px", borderRadius: "6px", cursor: "pointer", fontSize: "11px" }}>Approve</button>
-                )}
-              </div>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "12px", fontSize: "13px" }}>
-              <div style={{ color: "#8892b0" }}>Contact: <span style={{ color: "#1a1f36" }}>{v.contact_person}</span></div>
-              <div style={{ color: "#8892b0" }}>Phone: <span style={{ color: "#1a1f36" }}>{v.phone}</span></div>
-              <div style={{ color: "#8892b0" }}>District: <span style={{ color: "#1a1f36" }}>{v.district}</span></div>
-              <div style={{ color: "#8892b0" }}>Rate: <span style={{ color: "#1a1f36" }}>M {v.hourly_rate}/hr</span></div>
-              <div style={{ color: "#8892b0" }}>SLA Response: <span style={{ color: "#1a1f36" }}>{v.sla_response_hours} hrs</span></div>
-              <div style={{ color: "#8892b0" }}>SLA Completion: <span style={{ color: "#1a1f36" }}>{v.sla_completion_days} days</span></div>
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div style={{ color: "#f39c12", fontSize: "18px" }}>{v.rating > 0 ? stars(v.rating) : "Not rated"} <span style={{ fontSize: "13px", color: "#8892b0" }}>{v.rating > 0 ? v.rating + "/5" : ""}</span></div>
-              <button onClick={() => handleDelete(v.id)} style={{ background: "#fde8e8", color: "#e74c3c", border: "none", padding: "5px 12px", borderRadius: "6px", cursor: "pointer", fontSize: "12px" }}>Delete</button>
-            </div>
-          </div>
+      <div style={{ display: "flex", gap: "4px", marginBottom: "0", borderBottom: "2px solid #e0e0e0" }}>
+        {[["drivers","Driver List"],["licences","Licence Compliance"]].map(([tab, label]) => (
+          <button key={tab} style={tabStyle(tab)} onClick={() => setActiveTab(tab)}>{label}</button>
         ))}
       </div>
+
+      {activeTab === "drivers" && (
+        <div style={{ background: "#fff", borderRadius: "0 0 14px 14px", padding: "20px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
+          <div style={{ display: "flex", gap: "12px", marginBottom: "16px" }}>
+            <input placeholder="Search by name or licence..." value={search} onChange={e => setSearch(e.target.value)}
+              style={{ flex: 1, padding: "10px", borderRadius: "8px", border: "1px solid #e0e0e0" }} />
+            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
+              style={{ padding: "10px 16px", borderRadius: "8px", border: "1px solid #e0e0e0", background: "#fff" }}>
+              <option value="all">All Status</option>
+              <option value="available">Available</option>
+              <option value="on_trip">On Trip</option>
+              <option value="off_duty">Off Duty</option>
+            </select>
+          </div>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead><tr style={{ background: "#f9fafb" }}>
+              {["Name","Licence","Department","Phone","Email","Status","Actions"].map(h => (
+                <th key={h} style={{ padding: "10px 12px", textAlign: "left", fontSize: "12px", color: "#8892b0", fontWeight: "600", textTransform: "uppercase" }}>{h}</th>
+              ))}
+            </tr></thead>
+            <tbody>
+              {filtered.map(d => (
+                <tr key={d.id} style={{ borderBottom: "1px solid #f5f6fa" }}>
+                  <td style={{ padding: "12px", fontWeight: "600", color: "#1a1f36" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <div style={{ width: "34px", height: "34px", borderRadius: "50%", background: "#e8f0fd", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "13px", fontWeight: "700", color: "#4f8ef7" }}>
+                        {d.name.split(" ").map(n => n.charAt(0)).join("").slice(0,2).toUpperCase()}
+                      </div>
+                      {d.name}
+                    </div>
+                  </td>
+                  <td style={{ padding: "12px", color: "#8892b0" }}>{d.licence_number}</td>
+                  <td style={{ padding: "12px", color: "#8892b0" }}>{d.department || "-"}</td>
+                  <td style={{ padding: "12px" }}>{d.phone}</td>
+                  <td style={{ padding: "12px", color: "#8892b0" }}>{d.email}</td>
+                  <td style={{ padding: "12px" }}>
+                    <span style={{ padding: "4px 10px", borderRadius: "99px", fontSize: "12px", fontWeight: "500", background: statusStyle(d.status).bg, color: statusStyle(d.status).text }}>{d.status}</span>
+                  </td>
+                  <td style={{ padding: "12px" }}>
+                    <button onClick={() => handleDelete(d.id)} style={{ background: "#fde8e8", color: "#e74c3c", border: "none", padding: "6px 12px", borderRadius: "6px", cursor: "pointer", fontSize: "12px" }}>Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {activeTab === "licences" && (
+        <div style={{ background: "#fff", borderRadius: "0 0 14px 14px", padding: "20px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead><tr style={{ background: "#f9fafb" }}>
+              {["Driver","Department","Licence Type","Licence No","Expiry Date","Status"].map(h => (
+                <th key={h} style={{ padding: "10px 12px", textAlign: "left", fontSize: "12px", color: "#8892b0", fontWeight: "600", textTransform: "uppercase" }}>{h}</th>
+              ))}
+            </tr></thead>
+            <tbody>
+              {licenceAlerts.map(d => {
+                const days = parseInt(d.days_until_expiry);
+                const style = alertStyle(days);
+                return (
+                  <tr key={d.id} style={{ borderBottom: "1px solid #f5f6fa" }}>
+                    <td style={{ padding: "12px", fontWeight: "600", color: "#1a1f36" }}>{d.name}</td>
+                    <td style={{ padding: "12px", color: "#8892b0" }}>{d.department}</td>
+                    <td style={{ padding: "12px" }}>{d.licence_type}</td>
+                    <td style={{ padding: "12px", color: "#8892b0" }}>{d.licence_number}</td>
+                    <td style={{ padding: "12px" }}>{new Date(d.licence_expiry).toLocaleDateString()}</td>
+                    <td style={{ padding: "12px" }}>
+                      <span style={{ padding: "4px 10px", borderRadius: "99px", fontSize: "12px", fontWeight: "500", background: style.bg, color: style.text }}>{style.label}</span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
 
-export default Vendors;'''
+export default Drivers;'''
 
-with open('src/pages/Vendors.js', 'w', encoding='utf-8') as f:
+with open('src/pages/Drivers.js', 'w', encoding='utf-8') as f:
     f.write(content)
 
-print('Vendors.js written successfully!')
+print('Drivers.js written successfully!')

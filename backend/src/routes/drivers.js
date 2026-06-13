@@ -12,12 +12,28 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Get drivers with licence expiry alerts
+router.get('/licence-alerts', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT *, 
+             (licence_expiry - CURRENT_DATE) as days_until_expiry
+      FROM drivers 
+      WHERE licence_expiry IS NOT NULL
+      ORDER BY licence_expiry ASC
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.post('/', async (req, res) => {
-  const { name, licence_number, phone, email } = req.body;
+  const { name, licence_number, phone, email, licence_type, licence_expiry, department } = req.body;
   try {
     const result = await pool.query(
-      'INSERT INTO drivers (name, licence_number, phone, email) VALUES ($1, $2, $3, $4) RETURNING *',
-      [name, licence_number, phone, email]
+      'INSERT INTO drivers (name, licence_number, phone, email, licence_type, licence_expiry, department) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+      [name, licence_number, phone, email, licence_type, licence_expiry, department]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -26,11 +42,11 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-  const { name, licence_number, phone, email, status } = req.body;
+  const { name, licence_number, phone, email, status, licence_type, licence_expiry, department } = req.body;
   try {
     const result = await pool.query(
-      'UPDATE drivers SET name=$1, licence_number=$2, phone=$3, email=$4, status=$5 WHERE id=$6 RETURNING *',
-      [name, licence_number, phone, email, status, req.params.id]
+      'UPDATE drivers SET name=$1, licence_number=$2, phone=$3, email=$4, status=$5, licence_type=$6, licence_expiry=$7, department=$8 WHERE id=$9 RETURNING *',
+      [name, licence_number, phone, email, status, licence_type, licence_expiry, department, req.params.id]
     );
     res.json(result.rows[0]);
   } catch (err) {
