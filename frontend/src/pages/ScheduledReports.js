@@ -1,4 +1,4 @@
-content = '''import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const REPORT_TYPES = ["fleet_summary", "maintenance", "fuel_analytics", "driver_compliance", "incidents", "inspections", "trips"];
@@ -194,9 +194,4 @@ function ScheduledReports() {
   );
 }
 
-export default ScheduledReports;'''
-
-with open('src/pages/ScheduledReports.js', 'w', encoding='utf-8') as f:
-    f.write(content)
-
-print('ScheduledReports.js written successfully!')
+export default ScheduledReports;

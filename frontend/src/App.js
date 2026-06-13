@@ -15,6 +15,7 @@ import Inspections from './pages/Inspections';
 import PoolBookings from './pages/PoolBookings';
 import Vendors from './pages/Vendors';
 import Documents from './pages/Documents';
+import ScheduledReports from './pages/ScheduledReports';
 import Login from './pages/Login';
 import './App.css';
 
@@ -58,6 +59,7 @@ function App() {
             <Route path="/poolbookings" element={<PoolBookings />} />
             <Route path="/vendors" element={<Vendors />} />
             <Route path="/documents" element={<Documents />} />
+            <Route path="/scheduledreports" element={<ScheduledReports />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>
