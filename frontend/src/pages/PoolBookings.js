@@ -1,4 +1,4 @@
-content = '''import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const STATUS_COLORS = { pending: "#f39c12", approved: "#2ecc71", rejected: "#e74c3c", completed: "#4f8ef7" };
@@ -181,9 +181,4 @@ function PoolBookings() {
   );
 }
 
-export default PoolBookings;'''
-
-with open('src/pages/PoolBookings.js', 'w', encoding='utf-8') as f:
-    f.write(content)
-
-print('PoolBookings.js written successfully!')
+export default PoolBookings;
