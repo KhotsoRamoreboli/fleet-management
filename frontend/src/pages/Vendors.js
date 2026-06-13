@@ -1,4 +1,4 @@
-content = '''import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const VENDOR_TYPES = ["workshop", "panel_beater", "tyre_supplier", "towing", "auto_electrician", "specialist", "other"];
@@ -149,9 +149,4 @@ function Vendors() {
   );
 }
 
-export default Vendors;'''
-
-with open('src/pages/Vendors.js', 'w', encoding='utf-8') as f:
-    f.write(content)
-
-print('Vendors.js written successfully!')
+export default Vendors;
