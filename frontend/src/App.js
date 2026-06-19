@@ -1,28 +1,28 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Sidebar from './components/Sidebar';
-import Dashboard from './pages/Dashboard';
-import Vehicles from './pages/Vehicles';
-import Drivers from './pages/Drivers';
-import Alerts from './pages/Alerts';
-import Trips from './pages/Trips';
-import Maintenance from './pages/Maintenance';
-import Fuel from './pages/Fuel';
-import Reports from './pages/Reports';
-import Incidents from './pages/Incidents';
-import JobCards from './pages/JobCards';
-import Inspections from './pages/Inspections';
-import PoolBookings from './pages/PoolBookings';
-import Vendors from './pages/Vendors';
-import Documents from './pages/Documents';
-import ScheduledReports from './pages/ScheduledReports';
-import GPSTracking from './pages/GPSTracking'
-import Login from './pages/Login';
-import './App.css';
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Dashboard from "./pages/Dashboard";
+import Vehicles from "./pages/Vehicles";
+import Drivers from "./pages/Drivers";
+import Alerts from "./pages/Alerts";
+import Trips from "./pages/Trips";
+import Maintenance from "./pages/Maintenance";
+import Fuel from "./pages/Fuel";
+import Reports from "./pages/Reports";
+import Incidents from "./pages/Incidents";
+import JobCards from "./pages/JobCards";
+import Inspections from "./pages/Inspections";
+import PoolBookings from "./pages/PoolBookings";
+import Vendors from "./pages/Vendors";
+import Documents from "./pages/Documents";
+import ScheduledReports from "./pages/ScheduledReports";
+import GPSTracking from "./pages/GPSTracking";
+import Login from "./pages/Login";
+import "./App.css";
 
 function App() {
   const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('user');
+    const saved = localStorage.getItem("user");
     return saved ? JSON.parse(saved) : null;
   });
 
@@ -31,8 +31,8 @@ function App() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setUser(null);
   };
 
@@ -42,9 +42,9 @@ function App() {
 
   return (
     <Router>
-      <div style={{ display: 'flex', height: '100vh' }}>
-        <Sidebar user={user} onLogout={handleLogout} />
-        <div style={{ flex: 1, overflow: 'auto', background: '#f5f6fa' }}>
+      <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+        <Navbar user={user} onLogout={handleLogout} />
+        <div style={{ flex: 1, overflow: "auto", background: "#f5f6fa" }}>
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/vehicles" element={<Vehicles />} />
